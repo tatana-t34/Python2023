@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import datetime
-import data_base
+import data_base as data_base
 import sqlite3
 import asyncio
 from aiogram import Bot, Dispatcher, types
@@ -12,7 +12,7 @@ data_base.create_table()
 headers = {
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.686 YaBrowser/23.9.5.686 Yowser/2.5 Safari/537.36"
             }
-count_pages = 2
+count_pages = 2 
 for URL in [("https://bits.media/news/?nav_feed=page-" + str(i)) for i in range(1, count_pages + 1)]:
     page = requests.get(url=URL, headers=headers)
     soup = BeautifulSoup(page.content, "html.parser")
@@ -44,7 +44,7 @@ cursor = database.cursor()
 bot = Bot(token='6704686661:AAHra418RVGdH7M61keQmT-Cfje3yVocab8')
 dp = Dispatcher()
 
-@dp.message(Command('news'))
+@dp.message(Command('show_table'))
 async def show_table(message: types.Message):
     cursor.execute('SELECT * FROM news')
     data = cursor.fetchall()
@@ -55,6 +55,8 @@ async def show_table(message: types.Message):
     if len(response) > 4096:
         for x in range(0, len(response), 4096):
             await message.answer(response[x:x+4096])
+    else:
+        await message.answer(response)
 
 async def main():
     await dp.start_polling(bot)
